@@ -1,35 +1,78 @@
-### HANDLING CLIENT REQUESTS AND SENDING HTTP RESPONSES
-This server is able to successfully accept and handle the requests of multiple clients
-simultaneously. It is able to do this by creating a new pthread each time a client
-connects, and handling their request in the function 'handle_request()'. From here, the
-HTTP request is parsed into a 'request_data' structure by the function 'populate_request()',
-and the config file is parsed into a 'config_data' structure by the function 'populate_config()'.
-Both of these structures are defined in the header file server.h. The actual construction
-and writing of responses to the socket is done in the file httpResponses.c. Here, there are
-functions for sending a number of different response types to the client, and for each there
-is a Simple-Response and a Full-Response version depending on the request protocol. There are
-individual helper functions for sending text files (such as html & css), graphics files, and
-hard-coded responses. There are Response functions for all 4xx and 5xx status codes (although
-some of these are not actually used by the server), in addition to a 200 OK response. These
-are all functional, and the 200 OK response works for all text/html, text/css, image/gif, and
-image/jpeg file types.
+This is the README for Lab1 INET4021 Spring 2016.
 
-### WEBSITE
+***************************************
+Authors:
+***************************************
+	Mohamed Yunis: noorx004@umn.edu
+	Mohamoud Egal: egalx011@umn.edu
+
+****************************************
+University Machine tested on: 
+****************************************
+KH4250-41
+
+****************************************
+Files/Directories:
+****************************************
+src/ : Where the source codes for the webserver and cgi are
+   webServer.c: File that contains source code for the webserver implementation
+   cgi.cpp    : File that contains source code for the cgi written in C++ language. 
+   helper_funcs: File containing functions implemetned in the webserver
+   webServer.h: Header file 
+
+conf/: Where configurations files used in this project reside. 
+    http.conf: where the port, number of connections, and root directory for looking files are. 
+    mime.type: where the types of extensions accepted by the server reside. This is pulled from the apache http server project. 
+
+cgi-bin/: Where the executable of the webserver and the cgi are found. 
+
+log/    : Where the log files are found. If this directory doesn't originally exist, then the directory will be created during execution. 
+   access.log: keeps logging of server accesses
+   error.log : keeps error loggings to the server. 
+
+web/    : Contains sample html/htm file for testing. Some of these files (Bill of Right and Amendements) are from are the university
+	 site are used for testing like I had done in a previous class. 
+
+	images/ : subfolder : Contain images that can be used for testing. Similar folder can be found under the web folder. 
 
 
-### COMPILATION
-A makefile is included in the root directory for easy compilation. After compilation run 
-./server to start the server. Modifications may need to be made to Makefile depending on the OS.
+***********************************************
+Syntax and Usage:
+***********************************************
+From the Webserver folder, navigate to the src directory.
+>cd src
+From this directory you can run the make file. 
+>make
+This will compile the webserver and cgi and move the executables to the cgi-bin and also remove older executables
+Then navigate to the cgi-bin directory
+> cd ../cgi-bin
+Then you can run the webserver executable. 
+>./webServer
 
-### LOG FILES
-There are two log files: access.log and error.log. All stderr output is redirected to
-error.log, and all stdout output is redirected to access.log
+This will pull the port, number of maximnum allowable process and other essential information for running the webserver.
 
-### CGI
-The server is able to identify a CGI request and grab the query_string, but at this point
-neither CGI Get or Post are functioning. A 501 Not Implemented response if given instead.
+Then open up a browser of your choice and request one of the test htm/html or images provided by doing something like:
 
-#Note: All development and testing was done on macOS, and WSL: Ubuntu
+http://localhost:9001/cgi-bin/index.html or
+http://localhost:9001/cgi-bin/Bill.htm
+http://localhost:9001/cgi-bin/fancy.gif
+http://localhost:9001/cgi-bin/images/fancy.gif
+
+If you are remotely running the program from another machine, say like using ssh, then you can substitute the localhost part with ip address of the machine the program is running on. This had been tested and works! For example:
+
+http://128.101.37.41:9001/cgi-bin/images/fancy.gif
+http://128.101.37.41:9001/cgi-bin/fancy.gif
+
+NOTE:
+This webserver had been designed to be interactive (by displaying information on the terminal). and this can be seen on the terminal when you are running the program. 
+In the case of essential errors, like file not opening up, or not being created, it has been designed to output the exact format of the error on the termninal. This was done to help us during the program development and to make grading easier. 
+The process handling a certain request can be known by the number of "Server accepted a connection.." messages displayed on the terminal. 
+
+***********************************************
+Issues:
+***********************************************
+One of the issue found during the testing of the webserver project is ":Address already in use error message". Since the port number is not 
+specified by user but gets pulled from the conf folder, the operating system may assign that same port for something else. This is not for long and the port can be used in a very short while. 
 
 ## HOW TO RUN
 1. Edit ./conf/httpd.conf to contain correct configuration data
