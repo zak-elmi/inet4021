@@ -9,7 +9,8 @@ int num_connections = 0;
 
 //helper functions
 
-int populate_config () {
+int populate_config () 
+{
     FILE *cf;   // configuration file
     char mode = 'r';    // read-only mode
     char *filename = CONFIG_FILE;
@@ -24,14 +25,16 @@ int populate_config () {
     char data[MAX_STRING_LENGTH];    // used to temporarily contain individual strings
     /* copy configuration data to 'strings' array */
     int i = 0;
-    while (fscanf(cf, " %1023s", data) == 1) {
+    while (fscanf(cf, " %1023s", data) == 1) 
+    {
         strcpy(strings[i], data);
         i++;
     }
 
     /* identify relevent configuration data & populate config_data object */
     int j = 0;
-    while (j < i) {
+    while (j < i) 
+    {
         if (!strcmp(strings[j], MAX_CONNECTIONS_KWD)) {     // identify allowable number of simultaneous connections
             config->max_connections = atoi(strings[j+1]);
         } else if (!strcmp(strings[j], ROOT_KWD)) {         // identify ROOT directory
@@ -46,10 +49,12 @@ int populate_config () {
     return(0);
 }
 
-int populate_request (char *buf, request_data *request) {
+int populate_request (char *buf, request_data *request) 
+{
     int i=0, j=0;
     /* Copy request type to request_data object */
-    while (!ISspace(buf[i]) && (j < MAX_STRING_LENGTH - 1)) {
+    while (!ISspace(buf[i]) && (j < MAX_STRING_LENGTH - 1)) 
+    {
         request->type[j] = buf[i];
         i++;
         j++;
@@ -57,7 +62,8 @@ int populate_request (char *buf, request_data *request) {
 
     j = 0;
     /* Copy request path to request_data object */
-    while (!ISspace(buf[i]) && (j < MAX_STRING_LENGTH - 1)) {
+    while (!ISspace(buf[i]) && (j < MAX_STRING_LENGTH - 1)) 
+    {
         request->rel_path[j] = buf[i];
         i++;
         j++;
@@ -65,7 +71,8 @@ int populate_request (char *buf, request_data *request) {
 
     j = 0;
     /* Copy request protocol to request_data object */
-    while (!ISspace(buf[i]) && (j < MAX_STRING_LENGTH - 1)) {
+    while (!ISspace(buf[i]) && (j < MAX_STRING_LENGTH - 1)) 
+    {
         request->protocol[j] = buf[i];
         i++;
         j++;
@@ -79,7 +86,8 @@ int populate_request (char *buf, request_data *request) {
     return(0);
 }
 
-int file_type (char *path) {
+int file_type (char *path) 
+{
     char file_type[4];
     int i = 0, j = 0, copy = 0;
     /* Identify file type */
@@ -89,7 +97,8 @@ int file_type (char *path) {
             file_type[j] = path[i];
             j++;
         }
-        if (path[i] == '.') {
+        if (path[i] == '.') 
+	{
             copy = 1;
         } i++;
     }
@@ -99,15 +108,19 @@ int file_type (char *path) {
     else if (!strcmp(file_type, "cgi")) return(-2);  // request is for a .cgi script
     return(0);                                       // request is for none of the above
 }
-int valid_path (char *abs_path) {
+int valid_path (char *abs_path) 
+{
     return(!access(abs_path, F_OK));   // Check if file exists, return truth value
 }
-int send_get_response (int client, request_data *request) {
-    if (valid_path(request->abs_path)) {
+int send_get_response (int client, request_data *request) 
+{
+    if (valid_path(request->abs_path)) 
+    {
         // Send corresponding 200 OK response
         if (!strcasecmp(request->protocol, HTTP09)) simple_ok(client, request);
         else full_ok(client, request);
-    } else {
+    } else 
+    {
         // Send 404 Not Found response
         fprintf(stderr, "Invalid URI: %s\n", request->abs_path);
         if (!strcasecmp(request->protocol, HTTP09)) simple_not_found(client);
@@ -116,15 +129,18 @@ int send_get_response (int client, request_data *request) {
     return(0);
 }
 
-int get_query_string (char *query_string, char *uri) {
+int get_query_string (char *query_string, char *uri) 
+{
     int i = 0, j = 0, copy = 0;
     /* Identify file type */
-    while (i < strlen(uri)) {
+    while (i < strlen(uri)) 
+    {
         if (copy) {
             query_string[j] = uri[i];
             j++;
         }
-        if (uri[i] == '?') {
+        if (uri[i] == '?') 
+	{
             copy = 1;
         } i++;
     }
@@ -136,7 +152,8 @@ int get_query_string (char *query_string, char *uri) {
  * CGI REQUEST HANDLING
  **************************************************************************************/
 
-int handle_cgi (int client, request_data *request) {
+int handle_cgi (int client, request_data *request) 
+{
 
     fprintf(stderr, "Requested method is not imlemented: %s\n", request->type);
     if (!strcasecmp(request->protocol, HTTP09)) simple_not_implemented(client);
@@ -145,11 +162,9 @@ int handle_cgi (int client, request_data *request) {
     return(0);
 }
 
-/***************************************************************************************
- * CLIENT REQUEST HANDLING
- **************************************************************************************/
 
-void *handle_request (int client) {
+void *handle_request (int client) 
+{
     ssize_t ssize;
     request_data request;
     char buffer[BUFFER_SIZE];
@@ -158,19 +173,24 @@ void *handle_request (int client) {
     ssize = recv(client, &buffer, sizeof(buffer), 0);
     if (ssize < 0)
             perror("Did not receive anything because ");
-    else {
+    else 
+    {
         fprintf(stdout,"Got \"%s\" from socket %i\n", buffer, client);
         fprintf(stderr,"String length = %lu \n", strlen(buffer));
     }
 
     populate_request(buffer, &request); // parse relevant data from client request
 
-    if (request.file_type == -2) { // cgi request
+    if (request.file_type == -2)
+    { // cgi request
         handle_cgi(client, &request);
-    } else {
-        if (!strcasecmp(request.type, "GET")) { // GET request
+    } else 
+    {
+        if (!strcasecmp(request.type, "GET")) 
+	{ // GET request
             send_get_response(client, &request);
-        } else {    // Invalid request
+        } else 
+	{    // Invalid request
             fprintf(stderr, "Requested method is not imlemented: %s\n", request.type);
             if (!strcasecmp(request.protocol, HTTP09)) simple_not_implemented(client);
             else full_not_implemented(client, &request);
@@ -181,18 +201,18 @@ void *handle_request (int client) {
     return NULL;
 }
 
-/***************************************************************************************
- * MAIN FUNCTION
- **************************************************************************************/
 
-int main () {
+int main () 
+{
     /* Redirect output to log files */
     int access = open("logs/access.log", O_RDWR|O_CREAT|O_APPEND, 0600);
     int error = open("logs/error.log", O_RDWR|O_CREAT|O_APPEND, 0600);
-    if (access == -1) {
+    if (access == -1) 
+    {
         perror("Unable to open logs/access.log because ");
         return(0);
-    } else if (error == -1) {
+    } else if (error == -1) 
+    {
         perror("Unable to open logs/error.log because ");
         return(0);
     }
@@ -200,11 +220,13 @@ int main () {
     int stdout_dup = dup(fileno(stdout));
     int stderr_dup = dup(fileno(stderr));
 
-    if (dup2(access, fileno(stdout)) == -1) {
+    if (dup2(access, fileno(stdout)) == -1) 
+    {
         perror("Unable to redirect stdout because ");
         return(0);
     }
-    if (dup2(error, fileno(stderr)) == -1) {
+    if (dup2(error, fileno(stderr)) == -1) 
+    {
         perror("Unable to redirect stderr because ");
         return(0);
     }
@@ -227,23 +249,28 @@ int main () {
 	sin.sin_port = htons(config->port);
 
 	s = socket(PF_INET, SOCK_STREAM, 0);
-	if (s < 0) {
+	if (s < 0) 
+	{
 		perror("Could not create socket because ");
 	}
 
 	b = bind(s, (struct sockaddr *)&sin, sizeof(sin));
-	if (b < 0) {
+	if (b < 0) 
+	{
 		perror("Could not bind to socket because ");
 	}
 
 	listen(s, 12);
 
-    while (num_connections <= config->max_connections) {
+    while (num_connections <= config->max_connections) 
+    {
         addrlen = sizeof(struct sockaddr_in);
         new_socket = accept(s, (struct sockaddr *)&address, &addrlen);
-        if (new_socket<0) {
+        if (new_socket<0) 
+	{
             perror("Accept connection");
-        } else {
+        } else 
+	{
             fprintf(stderr, "got a connection\n");
         }
         num_connections++;
