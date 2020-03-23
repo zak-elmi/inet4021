@@ -1,5 +1,3 @@
-#!/usr/local/bin/perl -Tw
-
 use strict;
 use CGI;
 
