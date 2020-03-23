@@ -20,7 +20,8 @@ This server can accept and handle the requests of clients concurrently. It does 
 ***Log Files:***
 There are 2 log files: access.log and error.log. 
 
-
+***Current Issues***
+Though the server is fully working, there has been some issues with displaying certain content from the Webpage.
 ***Run Instructions:***
 Edit ./conf/httpd.conf to contain correct configuration data 
 Run "make"  
