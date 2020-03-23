@@ -1,21 +1,3 @@
-/***********************************************************
- * Filename: httpResponses.c
- * Description: Handles the creation and sending of HTTP 1.0
- *      responses for server.c
- * Author: Will Firth (firth008)
- * Course: INET 4021
- * Professor: Mark Langanki
- * Project: HTTP 1.0 server with CGI and Concurrency
- * Due Date: April 1st, 2019
- *
- * Note: Descriptions of functions are given as comments at
- *      their declaration in the header file (server.h), and
- *      all HTTP Responses are based on RFC/1945
- ***********************************************************/
-
-/***************************************************************************************
- * HEADERS
- **************************************************************************************/
 
 #include "server.h"
 
@@ -23,9 +5,8 @@
  * HELPER FUNCTIONS
  **************************************************************************************/
 
-/* Note: Code for this function is based on that found at the following link -
-https://stackoverflow.com/questions/7548759/generate-a-date-string-in-http-response-date-format-in-c */
-int get_current_date (char *current) {
+int get_current_date (char *current) 
+{
     char buf[MAX_STRING_LENGTH];
     time_t now = time(0);
     struct tm tm = *gmtime(&now);
@@ -34,14 +15,16 @@ int get_current_date (char *current) {
     return(0);
 }
 
-int get_last_modified_date (char *path, char *last) {
+int get_last_modified_date (char *path, char *last) 
+{
     struct stat data;
     stat(path, &data);
     sprintf(last, "Last-Modified: %s\r\n", ctime(&data.st_mtime));
     return(0);
 }
 
-int send_general_headers (int client) {
+int send_general_headers (int client) 
+{
     /* Generate string headers */
     General_Header actual_gen_headers;
     General_Header *gen_headers = &actual_gen_headers;
@@ -55,7 +38,8 @@ int send_general_headers (int client) {
     return(0);
 }
 
-int get_content_type (int file_type, char *content_type) {
+int get_content_type (int file_type, char *content_type) 
+{
     char type[16];
     /* Set the data type of the entity-body */
     switch (file_type) {
@@ -76,7 +60,8 @@ int get_content_type (int file_type, char *content_type) {
     return(0);
 }
 
-int send_text_file (int client, Entity_Header *ent_headers, request_data *request, int simple) {
+int send_text_file (int client, Entity_Header *ent_headers, request_data *request, int simple) 
+{
     int fd = open(request->abs_path, O_RDONLY);
     if (fd == -1) {
         fprintf(stderr, "Unable to open file: %s\n", request->abs_path);
@@ -93,7 +78,8 @@ int send_text_file (int client, Entity_Header *ent_headers, request_data *reques
         return(-1);
     }
     /* Set size of Entity-Body in bytes */
-    if (!simple) {
+    if (!simple) 
+    {
         sprintf(ent_headers->content_length, "Content-Length: %i\r\n\r\n", size);
         write(client, ent_headers->content_type, strlen(ent_headers->content_type));
         write(client, ent_headers->content_length, strlen(ent_headers->content_length));  // Send content-length header
@@ -103,7 +89,8 @@ int send_text_file (int client, Entity_Header *ent_headers, request_data *reques
 }
 
 
-int send_graphics_file (int client, Entity_Header *ent_headers, request_data *request, int simple) {
+int send_graphics_file (int client, Entity_Header *ent_headers, request_data *request, int simple) 
+{
     FILE *file = NULL;
     unsigned char buf[MAX_ENTITY_BODY_SIZE];
     size_t bytesRead = 0;
@@ -122,7 +109,8 @@ int send_graphics_file (int client, Entity_Header *ent_headers, request_data *re
     size = ftell(file);
     rewind(file);   // Point back to beginning of file
 
-    if (size <= 0) {    // Make sure file was traversed successfully
+    if (size <= 0) 
+    {    // Make sure file was traversed successfully
         fprintf(stderr, "Unable to read file: %s\n", request->abs_path);
         if (simple) simple_internal_server_error(client);
         else full_internal_server_error(client, request);
@@ -136,13 +124,15 @@ int send_graphics_file (int client, Entity_Header *ent_headers, request_data *re
     }
     /* Read file and send - if file is too large for the buffer then it will
         be sent in chunks until it is all sent */
-    while ((bytesRead = fread(buf, 1, sizeof(buf), file)) > 0) {
+    while ((bytesRead = fread(buf, 1, sizeof(buf), file)) > 0) 
+    {
         write(client, buf, bytesRead);      // Send Entity-Body
     }
     return(0);
 }
 
-int send_file_as_entity (int client, request_data *request, int simple) {
+int send_file_as_entity (int client, request_data *request, int simple) 
+{
     Entity_Header actual_ent_headers;
     Entity_Header *ent_headers = &actual_ent_headers;
     get_content_type(request->file_type, ent_headers->content_type);
@@ -152,7 +142,8 @@ int send_file_as_entity (int client, request_data *request, int simple) {
     return(0);
 }
 
-int send_string_as_entity (int client, request_data *request, char *body) {
+int send_string_as_entity (int client, request_data *request, char *body) 
+{
     /* Generate string headers */
     Entity_Header actual_ent_headers;
     Entity_Header *ent_headers = &actual_ent_headers;
@@ -166,21 +157,12 @@ int send_string_as_entity (int client, request_data *request, char *body) {
 }
 
 
-/***************************************************************************************
- * SIMPLE RESPONSES
- **************************************************************************************/
-
-//** 2XX SUCCESS RESPONSES **//
-
-void simple_ok (int client, request_data *request) {
+void simple_ok (int client, request_data *request) 
+{
     /* Send HTTP Simple-Response to socket */
     send_file_as_entity(client, request, 1);
 }
 
-//* 3XX REDIRECTION RESPONSES *//
-
-
-//** 4XX CLIENT ERROR RESPONSES **//
 
 void simple_bad_request (int client) { // 400
     char buf[BUFFER_SIZE];
@@ -214,11 +196,6 @@ void simple_internal_server_error (int client) { // 500
     write(client, buf, strlen(buf));
 }
 
-void simple_not_implemented (int client) { // 501
-    char buf[BUFFER_SIZE];
-    sprintf(buf, "<html><h1>Server Error 501</h1><p>Server does not support the functionality required to fulfill the request.</p></html>\r\n");
-    write(client, buf, strlen(buf));
-}
 
 void simple_bad_gateway (int client) { // 502
     char buf[BUFFER_SIZE];
@@ -226,15 +203,6 @@ void simple_bad_gateway (int client) { // 502
     write(client, buf, strlen(buf));
 }
 
-void simple_service_unavailable (int client) { // 503
-    char buf[BUFFER_SIZE];
-    sprintf(buf, "<html><h1>Server Error 503</h1><p>Server is temporarily unable to handle the request.</p></html>\r\n");
-    write(client, buf, strlen(buf));
-}
-
-/***************************************************************************************
- * FULL RESPONSES
- **************************************************************************************/
 
 //** 2XX SUCCESS RESPONSES **//
 void full_ok (int client, request_data *request) {
