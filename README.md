@@ -31,6 +31,9 @@ The server is able to identify a CGI request and grab the query_string, but at t
 
 
 Edit ./conf/httpd.conf to contain correct configuration data
-Run "make" (Makefile may need to be edited based on user OS)
+
+Run "make" 
+
 Run ./server
+
 Navigate to the URI localhost:[port] from a web browser
