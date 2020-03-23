@@ -1,5 +1,7 @@
-Authors - Lucas Traynor & Zakaria Elmi
+***Authors - Lucas Traynor & Zakaria Elmi***
+
 INET 4021 Lab 1 README
+
 The purpose of LAB 1 is to build an HTTP web server based on RCF/1945 guidelines and HTTP 1.0 protocols.
 
 ***Website:***
