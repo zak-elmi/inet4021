@@ -1,17 +1,3 @@
-/***********************************************************
- * Filename: server.h
- * Description: Header file for all C files in src
- * Author: Will Firth (firth008)
- * Course: INET 4021
- * Professor: Mark Langanki
- * Project: HTTP 1.0 server with CGI and Concurrency
- * Due Date: April 1st, 2019
- ***********************************************************/
-
-/***************************************************************************************
- * HEADERS
- **************************************************************************************/
-
 #include <sys/types.h>
 #include <sys/socket.h>
 #include <sys/stat.h>
@@ -27,9 +13,6 @@
 #include <stdio.h>
 #include <fcntl.h>
 
-/***************************************************************************************
- * MACRO DEFINITIONS
- **************************************************************************************/
 
 /* General definitions */
 #define ISspace(x) isspace((int)(x))        // function that identifies spaces in a string
@@ -123,7 +106,6 @@ int file_type (char *path);                                      // determine wh
 int get_query_string (char *query_string, char *uri);           // for a cgi request, get the query string
 int handle_cgi (int client, request_data *request);             // handle a cgi request from a client
 
-/* httpResponses.c functions */
 int get_current_date (char *current);    // Get the current date in rfc1123 format
 int get_last_modified_date (char *path, char *last);    // Get the last date the given file was modified in rfc1123 format
 int send_file_as_entity (int client, request_data *request, int simple);    // Send an entity-body along with its content-length header
