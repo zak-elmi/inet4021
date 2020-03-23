@@ -15,12 +15,7 @@ are all functional, and the 200 OK response works for all text/html, text/css, i
 image/jpeg file types.
 
 ### WEBSITE
-There is a simple but functional website located in the /html/ directory, in addition to the
-index.html file located in root /Lab1/ directory. The website has four pages:
-1. index.html - A basic "homepage" containing no graphics
-2. gifsTable.html - Contains a table, where a unique gif is displayed when the user hovers their mouse over an individual cell of the table. The browser sends an HTTP Request each time a different gif is displayed.
-3. imagesTable.html - The same premise as gifsTable.html, but with jpg images instead.
-4. cgi.html - Allows the user to input two integer values and add them together.
+
 
 ### COMPILATION
 A makefile is included in the root directory for easy compilation. After compilation run 
