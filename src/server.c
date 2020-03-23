@@ -1,19 +1,3 @@
-/***********************************************************
- * Filename: server.c
- * Description: Basic HTTP 1.0 server based on RFC/1945
- * Author: Will Firth (firth008)
- * Course: INET 4021
- * Professor: Mark Langanki
- * Project: HTTP 1.0 server with CGI and Concurrency
- * Due Date: April 1st, 2019
- *
- * Note: Descriptions of functions are given as comments at
- *      their declaration in the header file (server.h)
- ***********************************************************/
-
-/***************************************************************************************
- * HEADERS & GLOBAL VARIABLES
- **************************************************************************************/
 
 #include "server.h"
 
@@ -23,9 +7,7 @@ config_data *config = &actual_config;
 // Used for keeping track of the number of connections to the server
 int num_connections = 0;
 
-/***************************************************************************************
- * HELPER FUNCTIONS
- **************************************************************************************/
+//helper functions
 
 int populate_config () {
     FILE *cf;   // configuration file
