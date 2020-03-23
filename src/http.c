@@ -1,7 +1,30 @@
+/***********************************************************
+ * Filename: httpResponses.c
+ * Description: Handles the creation and sending of HTTP 1.0
+ *      responses for server.c
+ * Author: Will Firth (firth008)
+ * Course: INET 4021
+ * Professor: Mark Langanki
+ * Project: HTTP 1.0 server with CGI and Concurrency
+ * Due Date: April 1st, 2019
+ *
+ * Note: Descriptions of functions are given as comments at
+ *      their declaration in the header file (server.h), and
+ *      all HTTP Responses are based on RFC/1945
+ ***********************************************************/
+
+/***************************************************************************************
+ * HEADERS
+ **************************************************************************************/
 
 #include "server.h"
 
+/***************************************************************************************
+ * HELPER FUNCTIONS
+ **************************************************************************************/
 
+/* Note: Code for this function is based on that found at the following link -
+https://stackoverflow.com/questions/7548759/generate-a-date-string-in-http-response-date-format-in-c */
 int get_current_date (char *current) {
     char buf[MAX_STRING_LENGTH];
     time_t now = time(0);
