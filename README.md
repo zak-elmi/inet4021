@@ -27,6 +27,8 @@ The server is able to identify a CGI request and grab the query_string, but at t
 
 
 
+***Issues with Project***
+
 ***HOW TO RUN***
 
 
